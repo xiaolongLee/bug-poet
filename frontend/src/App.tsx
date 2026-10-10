@@ -32,8 +32,11 @@ const App: React.FC = () => {
     const score = calcAestheticScore(errorText)
     const label = getScoreLabel(score)
 
+    // Frontend timeout is intentionally longer (15s) than the backend's internal
+    // 10s LLM timeout so the backend has time to catch its own timeout and return
+    // a fallback poem JSON before the fetch is aborted here.
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 10000)
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
 
     try {
       const res = await fetch(API_BASE + '/api/poem', {
@@ -109,7 +112,7 @@ const App: React.FC = () => {
               {errorMessage}
             </div>
           )}
-          {poemResult && !poemResult.fallback && (
+          {poemResult && (
             <PoemDisplay
               title={poemResult.title}
               poem={poemResult.poem}
