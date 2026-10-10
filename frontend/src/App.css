@@ -1,0 +1,6 @@
+/* App-specific overrides — main styles are in index.css */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

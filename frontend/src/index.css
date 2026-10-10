@@ -1,0 +1,447 @@
+@import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@400;700&display=swap');
+
+/* ── Custom properties ── */
+:root {
+  --bg: #1a1208;
+  --paper: #2a1f0e;
+  --gold: #c8a96e;
+  --ink: #e8d5b0;
+  --accent: #8b3a3a;
+}
+
+/* ── Reset & base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Serif SC', serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── App layout ── */
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 4rem;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.app-title {
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin: 0;
+  font-family: 'ZCOOL XiaoWei', serif;
+}
+
+.app-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-btn {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--gold);
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  border-radius: 2px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-btn.active,
+.nav-btn:hover {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+/* ── Xuan paper surface ── */
+.xuan-paper {
+  background: var(--paper);
+  border: 1px solid var(--gold);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  padding: 2rem;
+}
+
+/* ── Poem display ── */
+.poem-display-wrapper {
+  margin-top: 2rem;
+}
+
+.poem-display {
+  position: relative;
+}
+
+.poem-container {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 2rem;
+  justify-content: center;
+  min-height: 200px;
+  padding: 1rem 0;
+}
+
+.vertical-poem {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 1.4rem;
+  line-height: 2;
+}
+
+.poem-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: var(--gold);
+  margin-left: 1rem;
+}
+
+.poem-line {
+  color: var(--ink);
+}
+
+/* ── Free-form badge ── */
+.free-form-badge {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--ink);
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  border-radius: 2px;
+  margin-top: 0.5rem;
+}
+
+/* ── Score section ── */
+.score-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.score-label {
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+.score-value {
+  font-size: 0.95rem;
+}
+
+.score-bar {
+  flex: 1;
+  min-width: 100px;
+  height: 6px;
+  background: rgba(200, 169, 110, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background: var(--gold);
+  transition: width 0.5s ease;
+}
+
+/* ── Note section ── */
+.note-section {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: rgba(232, 213, 176, 0.8);
+  border-top: 1px solid rgba(200, 169, 110, 0.3);
+  padding-top: 0.75rem;
+}
+
+.note-prefix {
+  color: var(--gold);
+  margin-right: 0.25rem;
+}
+
+/* ── Footer ── */
+.poem-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: rgba(232, 213, 176, 0.6);
+}
+
+.location {
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+/* ── Input panel ── */
+.input-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.error-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--gold);
+  color: var(--ink);
+  font-family: 'Noto Serif SC', serif;
+  width: 100%;
+  resize: vertical;
+  padding: 0.8rem;
+  border-radius: 2px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.error-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(200, 169, 110, 0.3);
+}
+
+/* ── Poetry type selector ── */
+.type-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.type-btn {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--gold);
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  border-radius: 2px;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.9rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.type-btn.active {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+.type-btn:hover:not(.active) {
+  background: rgba(200, 169, 110, 0.15);
+}
+
+/* ── Buttons ── */
+.btn-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--ink);
+  border: none;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1rem;
+  border-radius: 2px;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--gold);
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1rem;
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(200, 169, 110, 0.15);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-export {
+  display: block;
+  margin: 1rem auto 0;
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 0.4rem 1.2rem;
+  cursor: pointer;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+
+.btn-export:hover {
+  background: rgba(200, 169, 110, 0.15);
+}
+
+/* ── Status messages ── */
+.loading {
+  text-align: center;
+  color: var(--gold);
+  font-size: 1.1rem;
+  padding: 2rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.warning {
+  color: #e8a830;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.error-msg {
+  text-align: center;
+  color: var(--accent);
+  font-size: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+/* ── Poetry history ── */
+.poetry-history {
+  padding: 0.5rem 0;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.history-header h2 {
+  color: var(--gold);
+  margin: 0;
+  font-family: 'ZCOOL XiaoWei', serif;
+}
+
+.history-empty {
+  text-align: center;
+  color: rgba(232, 213, 176, 0.5);
+  padding: 3rem 0;
+  font-size: 1rem;
+}
+
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--paper);
+  border: 1px solid rgba(200, 169, 110, 0.4);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.history-item:hover {
+  border-color: var(--gold);
+  background: rgba(200, 169, 110, 0.08);
+}
+
+.history-title {
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.history-meta {
+  font-size: 0.8rem;
+  color: rgba(232, 213, 176, 0.6);
+}
+
+/* ── Modal overlay ── */
+.history-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.history-modal {
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
+  color: var(--gold);
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* ── Responsive (mobile) ── */
+@media (max-width: 600px) {
+  .poem-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .vertical-poem {
+    writing-mode: horizontal-tb;
+    text-align: center;
+  }
+
+  .poem-title {
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+  }
+}
