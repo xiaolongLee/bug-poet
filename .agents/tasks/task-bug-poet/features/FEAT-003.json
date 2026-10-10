@@ -1,0 +1,39 @@
+{
+  "id": "FEAT-003",
+  "type": "chore",
+  "description": "Wire up the root workspace (root package.json with workspaces + concurrently scripts), write README.md, create the .gitignore, and run the final cross-project integration verification: both builds must succeed, vitest tests must pass, and frontend/dist/ must exist. This feature depends on FEAT-001 and FEAT-002 being complete. It also fixes any integration seam issues (e.g., TypeScript path issues, missing type declarations for html2canvas, vite config test settings) found during the final build.",
+  "status": "completed",
+  "steps": [
+    "Create /Users/lndu/Documents/BugPoet/package.json as npm workspaces root: { name: 'bug-poet', private: true, workspaces: ['frontend', 'backend'], scripts: { 'dev:frontend': 'npm run dev -w frontend', 'dev:backend': 'npm run dev -w backend', 'dev': 'concurrently \"npm run dev:backend\" \"npm run dev:frontend\"', 'build': 'npm run build -w backend && npm run build -w frontend' }, devDependencies: { concurrently: '^8.2.2' } }.",
+
+    "Create /Users/lndu/Documents/BugPoet/.gitignore: node_modules/, dist/, .env, *.log, .DS_Store, frontend/.env.local.",
+
+    "Create /Users/lndu/Documents/BugPoet/README.md in Chinese with: project title and description, prerequisites (Node.js 18+, npm 9+), setup steps (git clone, npm install at root, cp backend/.env.example backend/.env, fill OPENAI_API_KEY in backend/.env), development commands (npm run dev from root starts both servers; frontend at :5173, backend at :3001), build command (npm run build), note about API key security.",
+
+    "Run npm install at root to install workspaces: cd /Users/lndu/Documents/BugPoet && npm install",
+
+    "Run final verification — backend build: cd /Users/lndu/Documents/BugPoet/backend && npm run build. Fix any TypeScript errors found.",
+
+    "Run final verification — frontend tests: cd /Users/lndu/Documents/BugPoet/frontend && npx vitest run. Fix any test failures. Common issues: vitest globals config in vite.config.ts (add globals:true to test config), jsdom environment, missing @vitest/globals types.",
+
+    "Run final verification — frontend build: cd /Users/lndu/Documents/BugPoet/frontend && npm run build. Fix any TypeScript or Vite build errors. Common issues: html2canvas type declarations (add @types/html2canvas if needed, or use 'as any' cast), missing type for import.meta.env.VITE_API_BASE_URL (add /// <reference types='vite/client' /> to vite-env.d.ts), noEmit:true in tsconfig means tsc only type-checks then vite builds.",
+
+    "Confirm frontend/dist/ exists: ls /Users/lndu/Documents/BugPoet/frontend/dist/. Record build success in FEAT findings."
+  ],
+  "acceptance_criteria": [
+    "cd /Users/lndu/Documents/BugPoet/backend && npm run build exits 0",
+    "cd /Users/lndu/Documents/BugPoet/frontend && npx vitest run exits 0 with all tests passing",
+    "cd /Users/lndu/Documents/BugPoet/frontend && npm run build exits 0",
+    "ls /Users/lndu/Documents/BugPoet/frontend/dist/ shows index.html and assets/",
+    "Root npm run build script is present and works",
+    "README.md exists at repo root with setup and run instructions"
+  ],
+  "verification": [
+    "cd /Users/lndu/Documents/BugPoet/backend && npm run build",
+    "cd /Users/lndu/Documents/BugPoet/frontend && npx vitest run",
+    "cd /Users/lndu/Documents/BugPoet/frontend && npm run build",
+    "ls /Users/lndu/Documents/BugPoet/frontend/dist/"
+  ],
+  "blocked_reason": null,
+  "findings": "All verification commands passed on first run with no fixes needed. Backend tsc build: exit 0. Frontend vitest: 15/15 tests passed. Frontend vite build: exit 0, dist/index.html and dist/assets/ produced. .gitignore updated to add *.log and .DS_Store entries per spec."
+}
