@@ -1,0 +1,40 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Scaffold the entire project and implement the backend: npm workspaces root, backend Express+TS server with rate limiting, LLM service (OpenAI client, format validation, retry logic, fallback poems), poem route, and all backend configuration files. This is independent of FEAT-002 and FEAT-003 (frontend) and must be completed first because frontend needs the API contract.",
+  "status": "completed",
+  "steps": [
+    "Create /Users/lndu/Documents/BugPoet/package.json as an npm workspaces root with workspaces: ['frontend','backend'], devDependency 'concurrently', and scripts: 'dev:frontend' ('npm run dev -w frontend'), 'dev:backend' ('npm run dev -w backend'), 'dev' (concurrently both), 'build' ('npm run build -w backend && npm run build -w frontend'). Create /Users/lndu/Documents/BugPoet/README.md with project description, setup instructions (npm install, copy .env.example to .env, fill OPENAI_API_KEY), and dev/build commands.",
+
+    "Create /Users/lndu/Documents/BugPoet/backend/package.json with name 'bug-poet-backend', scripts: 'build': 'tsc', 'dev': 'ts-node-dev --respawn --transpile-only src/index.ts', 'start': 'node dist/index.js'. Dependencies: express@^4.18.2, cors@^2.8.5, dotenv@^16.3.1, openai@^4.20.0, express-rate-limit@^7.1.5. DevDependencies: typescript@^5.3.2, @types/express@^4.17.21, @types/node@^20.10.0, @types/cors@^2.8.17, ts-node-dev@^2.0.0.",
+
+    "Create /Users/lndu/Documents/BugPoet/backend/tsconfig.json: compilerOptions target ES2020, module commonjs, outDir ./dist, rootDir ./src, strict true, esModuleInterop true, resolveJsonModule true, skipLibCheck true. Include ['src/**/*'].",
+
+    "Create /Users/lndu/Documents/BugPoet/backend/.env.example with: OPENAI_API_KEY=your-key-here, OPENAI_BASE_URL=https://api.openai.com/v1, PORT=3001, MODEL_NAME=gpt-4o-mini",
+
+    "Create /Users/lndu/Documents/BugPoet/backend/src/middleware/rateLimit.ts: import rateLimit from 'express-rate-limit'. Export rateLimitMiddleware = rateLimit({ windowMs: 60_000, max: 10, standardHeaders: true, legacyHeaders: false, message: { error: '请求过于频繁，请稍后再试' } }).",
+
+    "Create /Users/lndu/Documents/BugPoet/backend/src/services/llm.ts with full implementation: (a) SYSTEM_PROMPT const = '你是一位见过无数 bug 的古典诗人，要用诗意表达技术错误，但必须让懂技术的人一眼看出你在说哪类 bug。只输出 JSON：{ \"title\": \"...\", \"poem\": [\"句1\",\"句2\",...], \"note\": \"...\" }，严格遵守所选诗体的句数、字数要求，意象与报错类型相关。'; (b) FORMAT_CONSTRAINTS map: {'七言绝句':'恰好4句，每句7个汉字（不含标点）','五言绝句':'恰好4句，每句5个汉字（不含标点）','俳句':'恰好3行，字数依次约为5/7/5','宋词（小令）':'选一词牌，遵守词牌格律','现代诗':'4到8行，自由格律'}; (c) FALLBACK_POEMS map keyed by poetryType, each with title/poem/note — hardcode one per type; fallback for 七言绝句: title='空指针叹', poem=['虚无之处指针悬','万里寻址不得还','堆栈层层皆是梦','一声Null天地宽'], note='空指针异常，对象未初始化即被调用'; similar for other types; (d) function countCJK(s: string): number counting /[\\u4e00-\\u9fff]/g matches; (e) function validatePoem(poem: string[], type: string): string | null — 七言绝句: poem.length===4 && each countCJK===7; 五言绝句: poem.length===4 && each countCJK===5; 俳句: poem.length===3 (counts not strictly enforced, just line count); others: return null (always valid); (f) async function callLLM(userPrompt: string): Promise<{title,poem,note}> — instantiate OpenAI client with apiKey and baseURL from env, call chat.completions.create model/temperature:0.9/max_tokens:300 in Promise.race with 10s timeout reject, parse JSON (strip ```json fences), return parsed; (g) export async function generatePoem(errorText, poetryType): Promise<{title,poem,note,isFreeForm,fallback?}> — build initial userPrompt, call callLLM, validate, on failure build retry prompt with '上一次生成不合格，原因：{reason}。请重新生成，严格遵守{poetryType}格式：{constraint}。报错内容：{errorText}。只输出JSON', retry up to 2 times, after retries still invalid set isFreeForm:true; catch any error return FALLBACK_POEMS[poetryType] with fallback:true.",
+
+    "Create /Users/lndu/Documents/BugPoet/backend/src/routes/poem.ts: import Router from express, import generatePoem. POST '/' handler: extract errorText and poetryType from req.body; validate non-empty errorText (400 if missing); truncation safety net on backend: if errorText.length > 5000, take first 2000 + '\\n...[已截断]...\\n' + last 1000 chars; call generatePoem; if result.fallback, res.json({ fallback: true, ...result, message: '诗人今天罢工了' }); else res.json(result). Export router.",
+
+    "Create /Users/lndu/Documents/BugPoet/backend/src/index.ts: import dotenv/config, express, cors, rateLimitMiddleware, poemRouter. Create app. Set app.set('trust proxy', 1). Use cors({origin:'*'}), express.json({limit:'10kb'}), rateLimitMiddleware. Mount poemRouter at '/api/poem'. Listen on PORT env var or 3001. Log startup message.",
+
+    "Run npm install in backend/: cd /Users/lndu/Documents/BugPoet/backend && npm install"
+  ],
+  "acceptance_criteria": [
+    "cd /Users/lndu/Documents/BugPoet/backend && npm run build exits 0 with no TypeScript errors",
+    "backend/dist/index.js exists after build",
+    "backend/dist/routes/poem.js exists after build",
+    "backend/dist/services/llm.js exists after build",
+    "backend/dist/middleware/rateLimit.js exists after build",
+    "backend/.env.example exists with OPENAI_API_KEY, OPENAI_BASE_URL, PORT, MODEL_NAME entries",
+    "No API key or secret value appears in any backend source file (only process.env references)"
+  ],
+  "verification": [
+    "cd /Users/lndu/Documents/BugPoet/backend && npm install && npm run build",
+    "ls /Users/lndu/Documents/BugPoet/backend/dist/index.js"
+  ],
+  "blocked_reason": null,
+  "findings": "Backend API contract: POST /api/poem with body { errorText: string, poetryType: string }. Success response: { title: string, poem: string[], note: string, isFreeForm: boolean }. Fallback response adds { fallback: true, message: '诗人今天罢工了' }. Error response: { error: string } with HTTP 400. Backend runs on PORT env var (default 3001). Frontend should set VITE_API_BASE_URL=http://localhost:3001 for dev, and proxy /api to backend. Poem types: '七言绝句'(default), '五言绝句', '俳句', '宋词（小令）', '现代诗'. npm audit shows 3 high severity vulns in ts-node-dev transitive deps (not runtime deps, dev-only); acceptable for this project."
+}
