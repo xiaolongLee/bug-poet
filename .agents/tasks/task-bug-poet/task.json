@@ -1,0 +1,7 @@
+{
+  "task_id": "task-bug-poet",
+  "task_description": "Build Bug诗人 (Bug Poet) — a full-stack web app where users paste a program error/stack trace and the app calls an LLM to rewrite it as a classical Chinese poem, then displays it with calligraphic styling, aesthetic score, history, and PNG export.",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null
+}
