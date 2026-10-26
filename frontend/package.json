@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "node node_modules/vite/bin/vite.js",
-    "build": "node ../node_modules/.bin/tsc && node ../node_modules/.bin/vite build",
+    "build": "node node_modules/.bin/tsc && node node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
     "test": "vitest run"
   },
